@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -36,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addTransaction(String txtile, double amount) {
     final newTx =
-    Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
+        Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
     setState(() {
       tx.add(newTx);
     });
@@ -47,22 +48,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            TextEnter(addTransaction),
-            Tiles(tx)
-          ],
-        )
-      ),
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [TextEnter(addTransaction), Tiles(tx)],
+          )),
     );
   }
 }
 
 class Tiles extends StatelessWidget {
-  var tx;
+  List<Transaction> tx;
+
   Tiles(this.tx);
-  get gettx => tx;
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +67,12 @@ class Tiles extends StatelessWidget {
       child: ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: gettx.length,
+          itemCount: tx.length,
           itemBuilder: (ctx, index) {
             return ListTile(
-              leading: Text(gettx[index].amount),
-              title: Text(gettx[index].title),
-              subtitle: Text(gettx[index].dateTime.toString()),
+              leading: Text(tx[index].amount.toString()),
+              title: Text(tx[index].title),
+              subtitle: Text(tx[index].dateTime.toString()),
             );
           }),
     );
@@ -98,9 +95,10 @@ class TextEnter extends StatelessWidget {
       TextField(
         controller: _amountController,
       ),
-      ElevatedButton(onPressed: addNewTxt(_tileController.text, double.parse(_amountController.text)),
+      ElevatedButton(
+          onPressed: () => addNewTxt(
+              _tileController.text, double.parse(_amountController.text)),
           child: Text("Add Transaction")),
-    ]
-    );
+    ]);
   }
 }
