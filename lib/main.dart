@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-
+import 'Pages/EnterText.dart';
+import 'Pages/Tiles.dart';
 import 'model.dart';
 
 void main() {
@@ -10,7 +9,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -27,18 +25,29 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+
 }
 
+
 class _MyHomePageState extends State<MyHomePage> {
+
+
   List<Transaction> tx = [
     // Transaction(DateTime.now().toString(), 'New', 299.9, DateTime.now())
   ];
 
+  // Adding Transactions
   void addTransaction(String txtile, double amount) {
     final newTx =
-    Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
+        Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
     setState(() {
       tx.add(newTx);
+    });
+  }
+  // BottomSheet
+  void bottomSheet() {
+    showModalBottomSheet(context: context, builder: (index) {
+      return TextEnter(addTransaction);
     });
   }
 
@@ -47,60 +56,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            TextEnter(addTransaction),
-            Tiles(tx)
-          ],
-        )
-      ),
-    );
-  }
-}
-
-class Tiles extends StatelessWidget {
-  var tx;
-  Tiles(this.tx);
-  get gettx => tx;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListView.builder(
           scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: gettx.length,
-          itemBuilder: (ctx, index) {
-            return ListTile(
-              leading: Text(gettx[index].amount),
-              title: Text(gettx[index].title),
-              subtitle: Text(gettx[index].dateTime.toString()),
-            );
-          }),
-    );
-  }
-}
-
-class TextEnter extends StatelessWidget {
-  Function addNewTxt;
-  final _tileController = TextEditingController();
-  final _amountController = TextEditingController();
-
-  TextEnter(this.addNewTxt);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      TextField(
-        controller: _tileController,
+          child: Column(
+            children: [Tiles(tx)],
+          )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: bottomSheet,
+        child: Icon(Icons.add),
       ),
-      TextField(
-        controller: _amountController,
-      ),
-      ElevatedButton(onPressed: addNewTxt(_tileController.text, double.parse(_amountController.text)),
-          child: Text("Add Transaction")),
-    ]
     );
   }
 }
