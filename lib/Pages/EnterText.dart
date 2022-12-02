@@ -9,20 +9,65 @@ class TextEnter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      TextField(
-        controller: _tileController,
-
+    return Column(crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Center(
+            child: Container(
+              height: 200,
+                width: 200,
+                child: Image.asset("assets/images/expenses.jpg")),
+          ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: TextField(
+          controller: _tileController,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.title_rounded, color: Colors.grey,),
+              prefixIconColor: Colors.black,
+              filled: true,
+              labelStyle: TextStyle(color: Colors.grey),
+              labelText: 'Title',
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+          ),
+        ),
       ),
-      TextField(
-        controller: _amountController,
-        keyboardType: TextInputType.number,
+      SizedBox(height: 8),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: TextField(
+          controller: _amountController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.attach_money_rounded,
+            color: Colors.grey,),
+              filled: true,
+              fillColor: Colors.white,
+              labelText: 'Amount',
+              labelStyle: TextStyle(color: Colors.grey),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),),
+        ),
       ),
-      ElevatedButton(onPressed: () {
-        addNewTxt(_tileController.text, double.parse(_amountController.text));
-      },
-          child: Text("Add Transaction")),
-    ]
-    );
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0,),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              elevation: 0,
+          backgroundColor: Colors.redAccent),
+            onPressed: () {
+              addNewTxt(
+                  _tileController.text, double.parse(_amountController.text));
+            },
+            child: Text(
+              "Add Transaction",
+              style: TextStyle(color: Colors.white),
+            )),
+      ),
+    ]);
   }
 }

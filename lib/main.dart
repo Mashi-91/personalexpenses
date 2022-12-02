@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.amber,
       ),
       home: MyHomePage(),
     );
@@ -28,11 +28,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 
 }
-
-
 class _MyHomePageState extends State<MyHomePage> {
-
-
   List<Transaction> tx = [
     // Transaction(DateTime.now().toString(), 'New', 299.9, DateTime.now())
   ];
@@ -47,7 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   // BottomSheet
   void bottomSheet() {
-    showModalBottomSheet(context: context, builder: (index) {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      backgroundColor: Color(0xFFFFCF53),
+        context: context, builder: (_) {
       return TextEnter(addTransaction);
     });
   }
@@ -55,12 +54,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Expenses'),
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [Tiles(tx)],
           )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: bottomSheet,
         child: Icon(Icons.add),
