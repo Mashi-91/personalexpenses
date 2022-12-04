@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
-class TextEnter extends StatelessWidget {
+class TextEnter extends StatefulWidget {
   Function addNewTxt;
-  final _tileController = TextEditingController();
-  final _amountController = TextEditingController();
 
   TextEnter(this.addNewTxt);
+
+  @override
+  State<TextEnter> createState() => _TextEnterState();
+}
+
+class _TextEnterState extends State<TextEnter> {
+  final _tileController = TextEditingController();
+
+  final _amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,7 @@ class TextEnter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextField(
-          onChanged: (val) => _tileController.text,
+          onChanged: (val) => _tileController.text=val,
           controller: _tileController,
           decoration: const InputDecoration(
             prefixIcon: Icon(Icons.title_rounded, color: Colors.grey,),
@@ -41,7 +48,7 @@ class TextEnter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextField(
-              onChanged: (val) => _amountController.text,
+              onChanged: (val) => _amountController.text=val,
           controller: _amountController,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(
@@ -64,7 +71,7 @@ class TextEnter extends StatelessWidget {
               elevation: 0,
           backgroundColor: Colors.redAccent),
             onPressed: () {
-              addNewTxt(
+              widget.addNewTxt(
                   _tileController.text, double.parse(_amountController.text));
             },
             child: Text(
