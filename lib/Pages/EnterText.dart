@@ -9,7 +9,9 @@ class TextEnter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Center(
             child: Container(
@@ -20,6 +22,7 @@ class TextEnter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextField(
+          onChanged: (val) => _tileController.text,
           controller: _tileController,
           decoration: const InputDecoration(
             prefixIcon: Icon(Icons.title_rounded, color: Colors.grey,),
@@ -38,6 +41,7 @@ class TextEnter extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextField(
+              onChanged: (val) => _amountController.text,
           controller: _amountController,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(

@@ -9,6 +9,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -26,8 +27,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
-
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   List<Transaction> tx = [
     // Transaction(DateTime.now().toString(), 'New', 299.9, DateTime.now())
@@ -41,14 +42,21 @@ class _MyHomePageState extends State<MyHomePage> {
       tx.add(newTx);
     });
   }
+
   // BottomSheet
   void bottomSheet() {
     showModalBottomSheet(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Color(0xFFFFCF53),
-        context: context, builder: (_) {
-      return TextEnter(addTransaction);
-    });
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: Color(0xFFFFCF53),
+        context: context,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: TextEnter(addTransaction),
+          );
+        });
   }
 
   @override
