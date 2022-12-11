@@ -39,6 +39,8 @@ dependencies:
   bottom_bar_with_sheet: ^2.4.0
   bottom_sheet_stateful: ^0.1.1
   intl: ^0.17.0
+  scroll_date_picker: ^3.6.0
+  spinner_date_time_picker: ^0.0.8
 
 dev_dependencies:
   flutter_test:

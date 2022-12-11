@@ -21,17 +21,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Expenses',
-      theme: ThemeData(
-        primarySwatch: Colors.amber,
-      ),
-      // darkTheme: ThemeData(
-      //   brightness: Brightness.dark
-      // ),
-      home: MyHomePage(),
-    );
+    return Platform.isIOS
+        ? const CupertinoApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Expenses',
+            theme: CupertinoThemeData(
+              primaryColor: Colors.amber,
+            ),
+            // darkTheme: ThemeData(
+            //   brightness: Brightness.dark
+            // ),
+          )
+        : MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Expenses',
+            theme: ThemeData(
+              primarySwatch: Colors.amber,
+            ),
+            // darkTheme: ThemeData(
+            //   brightness: Brightness.dark
+            // ),
+            home: MyHomePage(),
+          );
   }
 }
 
@@ -53,9 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Adding Transactions
-  void addTransaction(String txtile, double amount) {
+  void addTransaction(String txtile, double amount, DateTime chooseDate) {
     final newTx =
-        Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
+        Transaction(DateTime.now().toString(), txtile, amount, chooseDate);
     setState(() {
       tx.add(newTx);
     });
@@ -89,80 +100,89 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final dynamic appBar = Platform.isIOS ? CupertinoNavigationBar(
-      middle: Text('Expenses'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            child: Icon(CupertinoIcons.add),
-            onTap: bottomSheet,
+    final dynamic appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text('Expenses'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  child: Icon(CupertinoIcons.add),
+                  onTap: bottomSheet,
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    ) : AppBar(
-      centerTitle: true,
-      title: Text('Expenses'),
-      elevation: 0,
-      actions: [
-        Platform.isAndroid
-            ? Container()
-            : IconButton(onPressed: bottomSheet, icon: Icon(Icons.add))
-      ],
-    );
+        : AppBar(
+            centerTitle: true,
+            title: Text('Expenses'),
+            elevation: 0,
+            actions: [
+              Platform.isAndroid
+                  ? Container()
+                  : IconButton(onPressed: bottomSheet, icon: Icon(Icons.add))
+            ],
+          );
     final tiles = SizedBox(
         height: (mediaQuery.size.height -
                 appBar.preferredSize.height -
                 mediaQuery.padding.top) *
             0.7,
         child: Tiles(removetx, tx));
-    final pageBody = SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          if (isLandscape)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'ShowChart',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Switch.adaptive(
-                  activeColor: Theme.of(context).primaryColor,
-                  value: _showGraph,
-                  onChanged: (val) {
-                    setState(() {
-                      _showGraph = val;
-                    });
-                  },
-                ),
-              ],
-            ),
-          if (!isLandscape)
-            Container(
-                height: (mediaQuery.size.height -
-                    appBar.preferredSize.height -
-                    mediaQuery.padding.top) *
-                    0.3,
-                child: Chart(_recentTransaction)),
-          if (!isLandscape) tiles,
-          if (isLandscape)
-            _showGraph
-                ? Container(
-                height: (mediaQuery.size.height -
-                    appBar.preferredSize.height -
-                    mediaQuery.padding.top) *
-                    0.7,
-                child: Chart(_recentTransaction))
-                : tiles
-        ],
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'ShowChart',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).primaryColor,
+                    value: _showGraph,
+                    onChanged: (val) {
+                      setState(() {
+                        _showGraph = val;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (!isLandscape)
+              Container(
+                  height: (mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.3,
+                  child: Chart(_recentTransaction)),
+            if (!isLandscape) tiles,
+            if (isLandscape)
+              _showGraph
+                  ? Container(
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransaction))
+                  : tiles
+          ],
+        ),
       ),
     );
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: appBar,
-      body: Platform.isIOS ? CupertinoPageScaffold(child: pageBody,navigationBar: appBar,) : pageBody,
+      body: Platform.isIOS
+          ? CupertinoPageScaffold(
+              child: pageBody,
+              navigationBar: appBar,
+            )
+          : pageBody,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Platform.isIOS
           ? Container()
