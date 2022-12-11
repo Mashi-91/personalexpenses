@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,11 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
   // Adding Transactions
   void addTransaction(String txtile, double amount) {
     final newTx =
-    Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
+        Transaction(DateTime.now().toString(), txtile, amount, DateTime.now());
     setState(() {
       tx.add(newTx);
     });
   }
+
   void removetx(int index) {
     setState(() {
       tx.removeAt(index);
@@ -69,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        backgroundColor: Color(0xFFFFBB15),
+        backgroundColor: Color(0xFFFFCF53),
         context: context,
         builder: (_) {
           return Padding(
@@ -85,54 +88,67 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final isLandscape =
-        mediaQuery.orientation == Orientation.landscape;
-    final appBar = AppBar(
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final dynamic appBar = Platform.isIOS ? CupertinoNavigationBar(
+      middle: Text('Expenses'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            child: Icon(CupertinoIcons.add),
+            onTap: bottomSheet,
+          )
+        ],
+      ),
+    ) : AppBar(
       centerTitle: true,
       title: Text('Expenses'),
       elevation: 0,
+      actions: [
+        Platform.isAndroid
+            ? Container()
+            : IconButton(onPressed: bottomSheet, icon: Icon(Icons.add))
+      ],
     );
     final tiles = SizedBox(
         height: (mediaQuery.size.height -
-            appBar.preferredSize.height -
-            mediaQuery.padding.top) *
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
             0.7,
-        child: Tiles(removetx,tx));
-
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: appBar,
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'ShowChart',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Switch(
-                    value: _showGraph,
-                    onChanged: (val) {
-                      setState(() {
-                        _showGraph = val;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            if (!isLandscape)
-              Container(
-                  height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                      0.3,
-                  child: Chart(_recentTransaction)),
-            if(!isLandscape) tiles,
-            if(isLandscape) _showGraph
+        child: Tiles(removetx, tx));
+    final pageBody = SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          if (isLandscape)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'ShowChart',
+                  style: TextStyle(fontSize: 20),
+                ),
+                Switch.adaptive(
+                  activeColor: Theme.of(context).primaryColor,
+                  value: _showGraph,
+                  onChanged: (val) {
+                    setState(() {
+                      _showGraph = val;
+                    });
+                  },
+                ),
+              ],
+            ),
+          if (!isLandscape)
+            Container(
+                height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                    0.3,
+                child: Chart(_recentTransaction)),
+          if (!isLandscape) tiles,
+          if (isLandscape)
+            _showGraph
                 ? Container(
                 height: (mediaQuery.size.height -
                     appBar.preferredSize.height -
@@ -140,14 +156,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     0.7,
                 child: Chart(_recentTransaction))
                 : tiles
-          ],
-        ),
+        ],
       ),
+    );
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: appBar,
+      body: Platform.isIOS ? CupertinoPageScaffold(child: pageBody,navigationBar: appBar,) : pageBody,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: bottomSheet,
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: bottomSheet,
+              child: Icon(Icons.add),
+            ),
     );
   }
 }

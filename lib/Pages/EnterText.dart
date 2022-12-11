@@ -24,7 +24,7 @@ class _TextEnterState extends State<TextEnter> {
             child: Container(
                 height: 200,
                 width: 200,
-                child: Image.asset("assets/images/expenses.png")),
+                child: Image.asset("assets/images/expenses.jpg")),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
